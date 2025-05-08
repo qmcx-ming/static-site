@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>立体 3D 礼物盒</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .scene {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(20deg) rotateY(-30deg);
+      cursor: pointer;
+    }
+
+    .face {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: #ff3c6d;
+      border: 2px solid #b02748;
+      background: repeating-linear-gradient(45deg,
+          #ff3c6d,
+          #ff3c6d 10px,
+          #ff5a82 10px,
+          #ff5a82 20px);
+      box-shadow: inset -3px -3px 10px rgba(255, 255, 255, 0.3),
+        inset 3px 3px 10px rgba(0, 0, 0, 0.1);
+      border: 2px solid #b02748;
+    }
+
+    .top {
+      transform: rotateX(90deg) translateZ(203px) translateY(100px);
+      background: #d42a53;
+      transform-origin: bottom;
+      transition: transform 0.8s ease;
+      z-index: 2;
+    }
+
+    .scene.open .top {
+      transform: rotateX(90deg) translateZ(400px) translateY(100px);
+    }
+
+    .front {
+      transform: translateZ(100px);
+      /* background-image: -webkit-repeating-linear-gradient(45deg, #fe2f54, #fe2f54 1px, #FE4365 1px, #FE4365 4px);
+      background-image: repeating-linear-gradient(45deg, #fe2f54, #fe2f54 1px, #FE4365 1px, #FE4365 4px); */
+    }
+
+    .back {
+      transform: rotateY(180deg) translateZ(100px);
+    }
+
+    .right {
+      transform: rotateY(90deg) translateZ(100px);
+      /* background: #e14b6d; */
+    }
+
+    .left {
+      transform: rotateY(-90deg) translateZ(100px);
+      /* background: #e14b6d; */
+    }
+
+    .bottom {
+      transform: rotateX(-90deg) translateZ(100px);
+      /* background: #c0284a; */
+    }
+
+    /* 横向丝带 */
+    .ribbon-horizontal {
+      position: absolute;
+      top: 90px;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: #fff;
+      z-index: 1;
+    }
+
+    /* 纵向丝带 */
+    .ribbon-vertical {
+      position: absolute;
+      left: 90px;
+      top: 0;
+      width: 30px;
+      height: 100%;
+      background: #fff;
+      z-index: 1;
+    }
+
+
+    /* 生日快乐文本 */
+    .text {
+      position: absolute;
+      top: 100px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 24px;
+      color: #fff;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateY(0);
+      transition: opacity 1s ease, transform 2s ease;
+      pointer-events: none;
+    }
+
+    .scene.open .text {
+      opacity: 1;
+      transform: translateY(-200px);
+    }
+
+    /* Fireworks */
+    .firework {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      animation: explode 1s ease-out forwards;
+      opacity: 0.9;
+    }
+
+    @keyframes explode {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(10) translate(calc(100px * var(--x)),
+            calc(100px * var(--y)));
+        opacity: 0;
+      }
+    }
+
+    /* 微微晃动效果 */
+    @keyframes wiggle {
+      0% {
+        transform: translateY(-260px) rotate(0deg);
+      }
+
+      25% {
+        transform: translateY(-260px) rotate(5deg);
+      }
+
+      50% {
+        transform: translateY(-260px) rotate(0deg);
+      }
+
+      75% {
+        transform: translateY(-260px) rotate(-5deg);
+      }
+
+      100% {
+        transform: translateY(-260px) rotate(0deg);
+      }
+    }
+
+    .gift {
+      font-size: 40px;
+      position: absolute;
+      top: 50%;
+      left: 30%;
+      transform: translate(-50%, -50%) translateY(-100px);
+      opacity: 0;
+      cursor: pointer;
+      z-index: 5;
+      pointer-events: none;
+      transition: opacity 0.3s ease 1s;
+    }
+
+    .scene.open .gift {
+      opacity: 1;
+      animation: wiggle 1s ease-in-out infinite;
+      pointer-events: auto;
+    }
+
+    .card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      z-index: 999;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+      width: 300px;
+    }
+
+    .card.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .card-content h2 {
+      margin-top: 0;
+      color: #ff3c6d;
+    }
+
+    .card-content img {
+      width: 100%;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scene" id="giftBox">
+    <div class="face top"></div>
+    <div class="face front">
+      <div class="ribbon-horizontal"></div>
+      <div class="ribbon-vertical"></div>
+    </div>
+    <div class="face back"></div>
+    <div class="face right">
+      <div class="ribbon-horizontal"></div>
+      <div class="ribbon-vertical"></div>
+    </div>
+    <div class="face left">
+      <div class="ribbon-horizontal"></div>
+      <div class="ribbon-vertical"></div>
+    </div>
+    <div class="face bottom">
+      <div class="ribbon-horizontal"></div>
+      <div class="ribbon-vertical"></div>
+    </div>
+    <div class="text" id="message">🎉 生日快乐！🎉</div>
+    <div class="gift" id="giftIcon">🎁</div>
+  </div>
+
+  <div class="card" id="greetingCard">
+    <div class="card-content">
+      <span class="close-btn" id="closeCard">×</span>
+      <h2>生日快乐！</h2>
+      <img src="../static/birthday.png" alt="生日快乐">
+    </div>
+  </div>
+
+
+  <script>
+    const giftBox = document.getElementById('giftBox');
+    const message = document.getElementById('message');
+
+    giftBox.addEventListener('click', () => {
+      giftBox.classList.toggle('open');
+      if (giftBox.classList.contains('open')) {
+        launchFireworks(20); // 增加烟花数量
+      }
+    });
+
+    function launchFireworks(count) {
+      for (let i = 0; i < count; i++) {
+        const fw = document.createElement('div');
+        fw.classList.add('firework');
+
+        // 位置：盒子中心
+        fw.style.left = `${window.innerWidth / 2}px`;
+        fw.style.top = `${window.innerHeight / 2}px`;
+
+        // 颜色：随机鲜艳 HSL
+        const hue = Math.floor(Math.random() * 360);
+        fw.style.background = `hsl(${hue}, 100%, 60%)`;
+        fw.style.boxShadow = `0 0 10px hsl(${hue}, 100%, 60%)`;
+
+        // 随机方向
+        fw.style.setProperty('--x', (Math.random() - 0.5).toFixed(2));
+        fw.style.setProperty('--y', (Math.random() - 0.5).toFixed(2));
+
+        document.body.appendChild(fw);
+        setTimeout(() => fw.remove(), 1000);
+      }
+    }
+
+    const giftIcon = document.getElementById('giftIcon');
+    const greetingCard = document.getElementById('greetingCard');
+    const closeBtn = document.getElementById('closeCard');
+
+    giftIcon.addEventListener('click', (e) => {
+      e.stopPropagation(); // 防止触发盒子关闭
+      greetingCard.classList.add('show');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      greetingCard.classList.remove('show');
+    });
+
+  </script>
+
+
+</body>
+
+</html>

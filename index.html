@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>青明尘下的静态网站</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      background: linear-gradient(to right, #fdfbfb, #ebedee);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      margin-top: 60px;
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .menu {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      width: 80%;
+      max-width: 1000px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      color: #444;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      font-size: 18px;
+    }
+
+    .menu a:hover {
+      background: #f0f0f0;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      color: #999;
+      font-size: 14px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>欢迎来到我的主页</header>
+
+  <div class="menu">
+    <a href="pages/mother-birthday.html">老妈生日祝福页</a>
+    <a href="https://github.com/qmcx-ming">GitHub</a>
+    <a href="https://www.cnblogs.com/qmcx">博客园</a>
+  </div>
+
+  <footer>© 2025 我的个人网站</footer>
+</body>
+</html>
